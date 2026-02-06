@@ -1,0 +1,19 @@
+# Configuration de la localisation pour Flutter
+
+# Répertoire contenant les fichiers .arb
+arb-dir: lib/l10n
+
+# Fichier template (langue par défaut)
+template-arb-file: app_ar.arb
+
+# Nom du fichier de sortie
+output-localization-file: app_localizations.dart
+
+# Nom de la classe générée
+output-class: AppLocalizations
+
+# Activer les getters nullable
+nullable-getter: true
+
+# Préférer les paramètres inline
+prefer-inline-arguments: true
