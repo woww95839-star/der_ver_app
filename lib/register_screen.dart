@@ -228,10 +228,10 @@ class _RegisterScreenState extends State<RegisterScreen> with SingleTickerProvid
                     _buildTextField(
                       controller: _nationalCardController,
                       label: context.l10n.nationalCard,
-                      hint: '8 digits',
+                      hint: '8-18 digits',
                       icon: Icons.credit_card,
                       keyboardType: TextInputType.number,
-                      maxLength: 8,
+                      maxLength: 18, // ✅ Augmenté pour les cartes biométriques
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       validator: (v) => !Utils.isValidNationalCard(v ?? '') ? context.l10n.errorInvalidNationalCard : null,
                     ),

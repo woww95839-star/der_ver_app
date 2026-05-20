@@ -26,16 +26,10 @@ class User {
     this.status = 'active',
   });
 
-  /// Nom complet
   String get fullName => '$prenom $nom';
-
-  /// Est admin?
   bool get isAdmin => role == 'admin';
-
-  /// Est bloqué?
   bool get isBlocked => status == 'blocked';
 
-  /// Convertir en Map pour SQLite
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -49,7 +43,6 @@ class User {
     };
   }
 
-  /// Créer depuis Map
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
@@ -57,13 +50,12 @@ class User {
       nom: map['nom'],
       prenom: map['prenom'],
       nationalCardNumber: map['national_card_number'] ?? '',
-      passwordHash: map['password_hash'],
+      passwordHash: map['password_hash'] ?? '',
       role: map['role'] ?? 'user',
       status: map['status'] ?? 'active',
     );
   }
 
-  /// Copier avec modifications
   User copyWith({
     int? id,
     String? phone,
@@ -87,44 +79,10 @@ class User {
   }
 }
 
-// ==================== SECURITY QUESTION ====================
-
-class SecurityQuestion {
-  final int? id;
-  final int userId;
-  final String question;
-  final String answerHash;
-
-  SecurityQuestion({
-    this.id,
-    required this.userId,
-    required this.question,
-    required this.answerHash,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'question': question,
-      'answer_hash': answerHash,
-    };
-  }
-
-  factory SecurityQuestion.fromMap(Map<String, dynamic> map) {
-    return SecurityQuestion(
-      id: map['id'],
-      userId: map['user_id'],
-      question: map['question'],
-      answerHash: map['answer_hash'],
-    );
-  }
-}
-
 // ==================== ALERT ====================
 
 class Alert {
-  final int? id;
+  final int? id; // ID Local (SQLite)
   final int userId;
   final String type;
   final String description;
@@ -148,65 +106,6 @@ class Alert {
     this.synced = 0,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Texte du statut (non localisé pour compatibilité)
-  String get statusText {
-    switch (status) {
-      case 'pending':
-        return 'En attente';
-      case 'in_progress':
-        return 'En cours';
-      case 'resolved':
-        return 'Résolu';
-      default:
-        return status;
-    }
-  }
-
-  /// Texte du statut localisé
-  String getStatusLabel(AppLocalizations l10n) {
-    switch (status) {
-      case 'pending':
-        return l10n.statusPending;
-      case 'in_progress':
-        return l10n.statusInProgress;
-      case 'resolved':
-        return l10n.statusResolved;
-      default:
-        return status;
-    }
-  }
-
-  /// Couleur du statut
-  Color get statusColor {
-    switch (status) {
-      case 'pending':
-        return const Color(0xFFFF9800); // Orange
-      case 'in_progress':
-        return const Color(0xFF2196F3); // Bleu
-      case 'resolved':
-        return const Color(0xFF4CAF50); // Vert
-      default:
-        return const Color(0xFF9E9E9E); // Gris
-    }
-  }
-
-  /// Icône du statut
-  IconData get statusIcon {
-    switch (status) {
-      case 'pending':
-        return Icons.pending;
-      case 'in_progress':
-        return Icons.sync;
-      case 'resolved':
-        return Icons.check_circle;
-      default:
-        return Icons.info;
-    }
-  }
-
-  /// Est synchronisé?
-  bool get isSynced => synced == 1;
-
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -225,14 +124,16 @@ class Alert {
   factory Alert.fromMap(Map<String, dynamic> map) {
     return Alert(
       id: map['id'],
-      userId: map['user_id'],
-      type: map['type'],
-      description: map['description'],
-      latitude: map['latitude'],
-      longitude: map['longitude'],
-      accuracy: map['accuracy'],
+      userId: map['user_id'] ?? 0,
+      type: map['type'] ?? '',
+      description: map['description'] ?? '',
+      latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
+      accuracy: (map['accuracy'] as num?)?.toDouble() ?? 0.0,
       status: map['status'] ?? 'pending',
-      createdAt: DateTime.parse(map['created_at']),
+      createdAt: map['created_at'] != null 
+          ? DateTime.parse(map['created_at']) 
+          : DateTime.now(),
       synced: map['synced'] ?? 0,
     );
   }
@@ -262,69 +163,33 @@ class Alert {
       synced: synced ?? this.synced,
     );
   }
-}
 
-// ==================== ALERT PHOTO ====================
-
-class AlertPhoto {
-  final int? id;
-  final int alertId;
-  final String photoPath;
-
-  AlertPhoto({
-    this.id,
-    required this.alertId,
-    required this.photoPath,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'alert_id': alertId,
-      'photo_path': photoPath,
-    };
+  // --- Helpers pour l'UI ---
+  String getStatusLabel(AppLocalizations l10n) {
+    switch (status) {
+      case 'pending': return l10n.statusPending;
+      case 'in_progress': return l10n.statusInProgress;
+      case 'resolved': return l10n.statusResolved;
+      default: return status;
+    }
   }
 
-  factory AlertPhoto.fromMap(Map<String, dynamic> map) {
-    return AlertPhoto(
-      id: map['id'],
-      alertId: map['alert_id'],
-      photoPath: map['photo_path'],
-    );
-  }
-}
-
-// ==================== ALERT FILE ====================
-
-class AlertFile {
-  final int? id;
-  final int alertId;
-  final String filePath;
-  final String fileName;
-
-  AlertFile({
-    this.id,
-    required this.alertId,
-    required this.filePath,
-    required this.fileName,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'alert_id': alertId,
-      'file_path': filePath,
-      'file_name': fileName,
-    };
+  Color get statusColor {
+    switch (status) {
+      case 'pending': return Colors.orange;
+      case 'in_progress': return Colors.blue;
+      case 'resolved': return Colors.green;
+      default: return Colors.grey;
+    }
   }
 
-  factory AlertFile.fromMap(Map<String, dynamic> map) {
-    return AlertFile(
-      id: map['id'],
-      alertId: map['alert_id'],
-      filePath: map['file_path'],
-      fileName: map['file_name'],
-    );
+  IconData get statusIcon {
+    switch (status) {
+      case 'pending': return Icons.pending;
+      case 'in_progress': return Icons.sync;
+      case 'resolved': return Icons.check_circle;
+      default: return Icons.info;
+    }
   }
 }
 
@@ -332,7 +197,7 @@ class AlertFile {
 
 class Message {
   final int? id;
-  final int alertId;
+  final int alertId; // Référence locale
   final String senderRole;
   final String message;
   final DateTime createdAt;
@@ -347,11 +212,7 @@ class Message {
     this.synced = 0,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  /// Est envoyé par un admin?
   bool get isFromAdmin => senderRole == 'admin';
-
-  /// Est synchronisé?
-  bool get isSynced => synced == 1;
 
   Map<String, dynamic> toMap() {
     return {
@@ -367,10 +228,12 @@ class Message {
   factory Message.fromMap(Map<String, dynamic> map) {
     return Message(
       id: map['id'],
-      alertId: map['alert_id'],
-      senderRole: map['sender_role'],
-      message: map['message'],
-      createdAt: DateTime.parse(map['created_at']),
+      alertId: map['alert_id'] ?? 0,
+      senderRole: map['sender_role'] ?? '',
+      message: map['message'] ?? '',
+      createdAt: map['created_at'] != null 
+          ? DateTime.parse(map['created_at']) 
+          : DateTime.now(),
       synced: map['synced'] ?? 0,
     );
   }
@@ -383,9 +246,9 @@ class SystemNotification {
   final int userId;
   final String title;
   final String message;
-  final String type; // warning, info, block
+  final String type;
   final DateTime createdAt;
-  final int isRead;
+  final bool isRead;
 
   SystemNotification({
     this.id,
@@ -394,7 +257,7 @@ class SystemNotification {
     required this.message,
     this.type = 'info',
     DateTime? createdAt,
-    this.isRead = 0,
+    this.isRead = false,
   }) : createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
@@ -405,7 +268,7 @@ class SystemNotification {
       'message': message,
       'type': type,
       'created_at': createdAt.toIso8601String(),
-      'is_read': isRead,
+      'is_read': isRead ? 1 : 0,
     };
   }
 
@@ -413,18 +276,59 @@ class SystemNotification {
     return SystemNotification(
       id: map['id'],
       userId: map['user_id'],
-      title: map['title'],
-      message: map['message'],
+      title: map['title'] ?? '',
+      message: map['message'] ?? map['body'] ?? '',
       type: map['type'] ?? 'info',
-      createdAt: DateTime.parse(map['created_at']),
-      isRead: map['is_read'] ?? 0,
+      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),
+      isRead: (map['is_read'] ?? 0) == 1,
     );
   }
 }
 
-// ==================== ALERT WITH DETAILS ====================
+// ==================== AUTRES MODÈLES (Résumé) ====================
 
-/// Alerte avec toutes ses informations liées
+class AlertPhoto {
+  final int? id;
+  final int alertId;
+  final String photoPath;
+  AlertPhoto({this.id, required this.alertId, required this.photoPath});
+  Map<String, dynamic> toMap() => {'id': id, 'alert_id': alertId, 'photo_path': photoPath};
+  factory AlertPhoto.fromMap(Map<String, dynamic> map) => AlertPhoto(id: map['id'], alertId: map['alert_id'], photoPath: map['photo_path']);
+}
+
+class AlertFile {
+  final int? id;
+  final int alertId;
+  final String filePath;
+  final String fileName;
+
+  AlertFile({this.id, required this.alertId, required this.filePath, required this.fileName});
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'alert_id': alertId,
+    'file_path': filePath,
+    'file_name': fileName,
+  };
+
+  factory AlertFile.fromMap(Map<String, dynamic> map) => AlertFile(
+    id: map['id'],
+    alertId: map['alert_id'],
+    filePath: map['file_path'],
+    fileName: map['file_name'],
+  );
+}
+
+class SecurityQuestion {
+  final int? id;
+  final int userId;
+  final String question;
+  final String answerHash;
+  SecurityQuestion({this.id, required this.userId, required this.question, required this.answerHash});
+  Map<String, dynamic> toMap() => {'id': id, 'user_id': userId, 'question': question, 'answer_hash': answerHash};
+  factory SecurityQuestion.fromMap(Map<String, dynamic> map) => SecurityQuestion(id: map['id'], userId: map['user_id'], question: map['question'], answerHash: map['answer_hash']);
+}
+
 class AlertWithDetails {
   final Alert alert;
   final User user;
@@ -436,71 +340,7 @@ class AlertWithDetails {
     required this.alert,
     required this.user,
     required this.photos,
-    required this.files,
-    required this.messageCount,
+    this.files = const [],
+    required this.messageCount
   });
-}
-
-// ==================== TYPES D'ALERTES ====================
-
-class AlertType {
-  final String id;
-  final String name;
-  final IconData icon;
-  final Color color;
-
-  const AlertType({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.color,
-  });
-
-  /// Types d'alertes prédéfinis
-  static List<AlertType> getTypes(AppLocalizations l10n) {
-    return [
-      AlertType(
-        id: 'theft',
-        name: l10n.alertTypeTheft,
-        icon: Icons.work_off,
-        color: const Color(0xFFF44336),
-      ),
-      AlertType(
-        id: 'assault',
-        name: l10n.alertTypeAssault,
-        icon: Icons.warning,
-        color: const Color(0xFFFF9800),
-      ),
-      AlertType(
-        id: 'accident',
-        name: l10n.alertTypeAccident,
-        icon: Icons.car_crash,
-        color: const Color(0xFFFF5722),
-      ),
-      AlertType(
-        id: 'drug',
-        name: l10n.alertTypeDrugs,
-        icon: Icons.healing,
-        color: const Color(0xFF4CAF50),
-      ),
-      AlertType(
-        id: 'violence',
-        name: l10n.alertTypeViolence,
-        icon: Icons.local_fire_department,
-        color: const Color(0xFFE91E63),
-      ),
-      AlertType(
-        id: 'fraud',
-        name: l10n.alertTypeFraud,
-        icon: Icons.credit_card_off,
-        color: const Color(0xFF673AB7),
-      ),
-      AlertType(
-        id: 'other',
-        name: l10n.alertTypeOther,
-        icon: Icons.more_horiz,
-        color: const Color(0xFF607D8B),
-      ),
-    ];
-  }
 }

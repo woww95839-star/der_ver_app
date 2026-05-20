@@ -9,6 +9,7 @@ import 'user_feedback_screen.dart';
 import 'settings_screen.dart';
 import 'user_notifications_screen.dart';
 import 'context_extensions.dart';
+import 'app_logo.dart';
 
 class UserHomeScreen extends StatefulWidget {
   final User user;
@@ -169,6 +170,7 @@ class _HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isAr = context.isArabic;
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.appTitle),
@@ -228,39 +230,30 @@ class _HomePage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
+            // PROFILE SECTION WITH NEW BRANDING
             Card(
-              elevation: 4,
+              elevation: 8,
+              shadowColor: context.colors.brand.withOpacity(0.3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Container(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(24),
                   gradient: LinearGradient(
-                    colors: [context.colors.brand, context.colors.brand.withOpacity(0.7)],
+                    colors: [context.colors.brand, context.colors.brandDark],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 35,
-                          backgroundColor: Colors.white,
-                          child: Text(
-                            user.prenom.isNotEmpty ? user.prenom[0].toUpperCase() : '?',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                              color: context.colors.brand,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
+                        // Dynamic App Logo as part of profile identity
+                        const AppLogo(size: 80, showShadow: false),
+                        const SizedBox(width: 20),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,6 +263,7 @@ class _HomePage extends StatelessWidget {
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -277,28 +271,30 @@ class _HomePage extends StatelessWidget {
                                 user.fullName,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 22,
+                                  fontSize: 24,
                                   fontWeight: FontWeight.bold,
+                                  letterSpacing: 0.5,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.phone,
-                                    color: Colors.white70,
-                                    size: 14,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    user.phone,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 13,
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.verified, color: Colors.white, size: 14),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      isAr ? 'مواطن مسجل' : 'Verified Citizen',
+                                      style: const TextStyle(color: Colors.white, fontSize: 12),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -310,14 +306,21 @@ class _HomePage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
 
-            Text(
-              context.l10n.statistics,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+            // STATS SECTION
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  context.l10n.statistics,
+                  style: context.titleLarge?.bold.colored(context.colors.textPrimary),
+                ),
+                TextButton(
+                  onPressed: onRefresh,
+                  child: Text(isAr ? 'تحديث' : 'Refresh'),
+                ),
+              ],
             ),
 
             const SizedBox(height: 16),
@@ -330,48 +333,38 @@ class _HomePage extends StatelessWidget {
                 ),
               )
             else ...[
-              Row(
+              // Grid of statistics
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.4,
                 children: [
-                  Expanded(
-                    child: _StatCard(
-                      title: context.l10n.totalAlerts,
-                      value: totalAlerts,
-                      icon: Icons.list_alt,
-                      color: Colors.blue,
-                    ),
+                  _StatCard(
+                    title: context.l10n.totalAlerts,
+                    value: totalAlerts,
+                    icon: Icons.assignment_rounded,
+                    color: context.colors.info,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _StatCard(
-                      title: context.l10n.statusPending,
-                      value: pendingAlerts,
-                      icon: Icons.pending,
-                      color: Colors.orange,
-                    ),
+                  _StatCard(
+                    title: context.l10n.statusPending,
+                    value: pendingAlerts,
+                    icon: Icons.hourglass_empty_rounded,
+                    color: context.colors.warning,
                   ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      title: context.l10n.statusInProgress,
-                      value: inProgressAlerts,
-                      icon: Icons.sync,
-                      color: Colors.blue,
-                    ),
+                  _StatCard(
+                    title: context.l10n.statusInProgress,
+                    value: inProgressAlerts,
+                    icon: Icons.engineering_rounded,
+                    color: Colors.indigoAccent,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _StatCard(
-                      title: context.l10n.statusResolved,
-                      value: resolvedAlerts,
-                      icon: Icons.check_circle,
-                      color: Colors.green,
-                    ),
+                  _StatCard(
+                    title: context.l10n.statusResolved,
+                    value: resolvedAlerts,
+                    icon: Icons.check_circle_rounded,
+                    color: context.colors.success,
                   ),
                 ],
               ),
@@ -379,21 +372,19 @@ class _HomePage extends StatelessWidget {
               const SizedBox(height: 32),
 
               Text(
-                context.isArabic ? 'الإجراءات السريعة' : 'Quick Actions',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                isAr ? 'الإجراءات السريعة' : 'Quick Actions',
+                style: context.titleLarge?.bold.colored(context.colors.textPrimary),
               ),
 
               const SizedBox(height: 16),
 
+              // Action Buttons with refined design
               Row(
                 children: [
                   Expanded(
                     child: _ActionCard(
                       title: context.l10n.createAlert,
-                      icon: Icons.add_alert,
+                      icon: Icons.add_circle_outline_rounded,
                       color: context.colors.brand,
                       onTap: () async {
                         final result = await Navigator.push(
@@ -412,8 +403,8 @@ class _HomePage extends StatelessWidget {
                   Expanded(
                     child: _ActionCard(
                       title: context.l10n.myAlerts,
-                      icon: Icons.list,
-                      color: Colors.blue,
+                      icon: Icons.history_rounded,
+                      color: context.colors.info,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -434,8 +425,8 @@ class _HomePage extends StatelessWidget {
                   Expanded(
                     child: _ActionCard(
                       title: context.l10n.feedback,
-                      icon: Icons.feedback,
-                      color: Colors.teal,
+                      icon: Icons.rate_review_rounded,
+                      color: context.colors.success,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -450,8 +441,8 @@ class _HomePage extends StatelessWidget {
                   Expanded(
                     child: _ActionCard(
                       title: context.l10n.settings,
-                      icon: Icons.settings,
-                      color: Colors.grey,
+                      icon: Icons.tune_rounded,
+                      color: context.colors.textSecondary,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -467,33 +458,48 @@ class _HomePage extends StatelessWidget {
 
               const SizedBox(height: 32),
 
+              // Safety Banner
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  borderRadius: BorderRadius.circular(12),
+                  color: context.colors.brand.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: Colors.blue[200]!,
+                    color: context.colors.brand.withOpacity(0.1),
                     width: 1,
                   ),
                 ),
                 child: Row(
                   children: [
-                    Icon(
-                      Icons.info_outline,
-                      color: Colors.blue[700],
-                      size: 24,
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: context.colors.brand.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.shield_rounded,
+                        color: context.colors.brand,
+                        size: 24,
+                      ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 16),
                     Expanded(
-                      child: Text(
-                        context.isArabic 
-                          ? 'يمكنك إنشاء تنبيه جديد بالضغط على زر "+" في الأسفل' 
-                          : 'You can create a new alert by clicking the "+" button below',
-                        style: TextStyle(
-                          color: Colors.blue[900],
-                          fontSize: 13,
-                        ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isAr ? 'أمنكم أولويتنا' : 'Your Safety First',
+                            style: context.titleSmall?.bold.colored(context.colors.brand),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            isAr 
+                              ? 'كل بلاغ ترفعه يساهم في جعل حيّك أكثر أماناً. شكراً لتعاونك.' 
+                              : 'Every report you submit helps make your neighborhood safer. Thank you.',
+                            style: context.bodySmall?.colored(context.colors.textSecondary),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -524,50 +530,45 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.colors.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: color,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value.toString(),
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: color,
+        ],
+        border: Border.all(color: context.colors.divider.withOpacity(0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, size: 24, color: color),
+              Text(
+                value.toString(),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                color: Colors.grey[700],
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+            ],
+          ),
+          Text(
+            title,
+            style: context.labelMedium?.bold.colored(context.colors.textSecondary),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
@@ -588,30 +589,32 @@ class _ActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+    return Material(
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          decoration: BoxDecoration(
+            color: context.colors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: context.colors.divider),
+          ),
           child: Column(
             children: [
-              Icon(
-                icon,
-                size: 40,
-                color: color,
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, size: 30, color: color),
               ),
               const SizedBox(height: 12),
               Text(
                 title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: context.labelLarge?.bold.colored(context.colors.textPrimary),
                 textAlign: TextAlign.center,
               ),
             ],

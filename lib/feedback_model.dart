@@ -45,8 +45,30 @@ class UserFeedback {
       rating: map['rating'],
       status: map['status'] ?? 'pending',
       adminReply: map['admin_reply'],
-      createdAt: DateTime.parse(map['created_at']),
+      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),
       repliedAt: map['replied_at'] != null ? DateTime.parse(map['replied_at']) : null,
+    );
+  }
+
+  UserFeedback copyWith({
+    int? id,
+    int? userId,
+    String? message,
+    int? rating,
+    String? status,
+    String? adminReply,
+    DateTime? createdAt,
+    DateTime? repliedAt,
+  }) {
+    return UserFeedback(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      message: message ?? this.message,
+      rating: rating ?? this.rating,
+      status: status ?? this.status,
+      adminReply: adminReply ?? this.adminReply,
+      createdAt: createdAt ?? this.createdAt,
+      repliedAt: repliedAt ?? this.repliedAt,
     );
   }
 

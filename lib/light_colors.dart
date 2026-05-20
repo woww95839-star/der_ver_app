@@ -1,48 +1,46 @@
 import 'package:flutter/material.dart';
 import 'semantic_colors.dart';
 
-/// 🌞 PALETTE LIGHT MODE - Thème Clair
+/// 🌞 PALETTE LIGHT MODE - Thème Clair (Nouvelle Identité "Balagh Amen")
 ///
 /// Implémentation des Design Tokens pour le mode clair
-/// Optimisé pour la lisibilité en plein jour
+/// Basée sur l'identité Indigo & Émeraude
 class LightColors {
   // ============================================
   // 🎨 PALETTE DE BASE
   // ============================================
 
-  // Rouge Balagh Amen (Brand)
-  static const Color _brandRed = Color(0xFFD32F2F);
-  static const Color _brandRedLight = Color(0xFFE57373);
-  static const Color _brandRedDark = Color(0xFFC62828);
+  // Bleu Indigo (Brand - Confiance et Autorité)
+  static const Color _brandIndigo = Color(0xFF1A237E);
+  static const Color _brandIndigoLight = Color(0xFF3949AB);
+  static const Color _brandIndigoDark = Color(0xFF0D1440);
 
-  // Bleus
-  static const Color _blue = Color(0xFF2196F3);
-  static const Color _blueLight = Color(0xFF64B5F6);
-  static const Color _blueDark = Color(0xFF1976D2);
+  // Vert Émeraude (Accent - Identité Nationale et Sécurité)
+  static const Color _emeraldGreen = Color(0xFF006233);
+  static const Color _emeraldGreenLight = Color(0xFF2E7D32);
 
-  // Verts
-  static const Color _green = Color(0xFF4CAF50);
-  static const Color _greenLight = Color(0xFF81C784);
-  static const Color _greenDark = Color(0xFF388E3C);
+  // Bleus Info
+  static const Color _blueInfo = Color(0xFF1976D2);
 
-  // Oranges
-  static const Color _orange = Color(0xFFFF9800);
-  static const Color _orangeLight = Color(0xFFFFB74D);
-  static const Color _orangeDark = Color(0xFFF57C00);
+  // Oranges Warning
+  static const Color _orangeWarning = Color(0xFFF57C00);
+
+  // Rouges Error
+  static const Color _redError = Color(0xFFD32F2F);
 
   // Neutres
   static const Color _white = Color(0xFFFFFFFF);
   static const Color _black = Color(0xFF000000);
-  static const Color _grey50 = Color(0xFFFAFAFA);
-  static const Color _grey100 = Color(0xFFF5F5F5);
-  static const Color _grey200 = Color(0xFFEEEEEE);
-  static const Color _grey300 = Color(0xFFE0E0E0);
-  static const Color _grey400 = Color(0xFFBDBDBD);
-  static const Color _grey500 = Color(0xFF9E9E9E);
-  static const Color _grey600 = Color(0xFF757575);
-  static const Color _grey700 = Color(0xFF616161);
-  static const Color _grey800 = Color(0xFF424242);
-  static const Color _grey900 = Color(0xFF212121);
+  static const Color _grey50 = Color(0xFFF8F9FA);
+  static const Color _grey100 = Color(0xFFF1F3F5);
+  static const Color _grey200 = Color(0xFFE9ECEF);
+  static const Color _grey300 = Color(0xFFDEE2E6);
+  static const Color _grey400 = Color(0xFFCED4DA);
+  static const Color _grey500 = Color(0xFFADB5BD);
+  static const Color _grey600 = Color(0xFF6C757D);
+  static const Color _grey700 = Color(0xFF495057);
+  static const Color _grey800 = Color(0xFF343A40);
+  static const Color _grey900 = Color(0xFF212529);
 
   // ============================================
   // 🎯 SEMANTIC COLORS (Design Tokens)
@@ -50,56 +48,56 @@ class LightColors {
 
   static const SemanticColors semanticColors = SemanticColors(
     // Brand
-    brand: _brandRed,
-    brandLight: _brandRedLight,
-    brandDark: _brandRedDark,
+    brand: _brandIndigo,
+    brandLight: _brandIndigoLight,
+    brandDark: _brandIndigoDark,
 
     // Status
-    statusPending: _orange,
-    statusInProgress: _blue,
-    statusResolved: _green,
+    statusPending: _orangeWarning,
+    statusInProgress: _blueInfo,
+    statusResolved: _emeraldGreen,
 
     // Feedback
-    success: _green,
-    warning: _orange,
-    error: _brandRed,
-    info: _blue,
+    success: _emeraldGreen,
+    warning: _orangeWarning,
+    error: _redError,
+    info: _blueInfo,
 
-    // Surfaces - OPTIMISÉ POUR LISIBILITÉ LIGHT MODE
-    background: _grey50,        // Fond très légèrement gris (repose les yeux)
-    surface: _white,            // Cartes blanches (contraste maximal)
-    surfaceVariant: _grey100,   // Cartes légèrement grises
-    surfaceContainer: _grey200, // Conteneurs interactifs
+    // Surfaces
+    background: _grey50,
+    surface: _white,
+    surfaceVariant: _grey100,
+    surfaceContainer: _grey200,
 
-    // Text - CONTRASTE MAXIMUM POUR LIGHT MODE
-    textPrimary: _grey900,      // Noir profond (excellent contraste)
-    textSecondary: _grey600,    // Gris moyen (lisible mais discret)
-    textDisabled: _grey400,     // Gris clair (désactivé)
-    textOnColor: _white,        // Blanc sur couleurs (brand, success...)
+    // Text
+    textPrimary: _grey900,
+    textSecondary: _grey700,
+    textDisabled: _grey500,
+    textOnColor: _white,
 
     // Borders
-    border: _grey300,           // Bordure légère
-    borderStrong: _grey500,     // Bordure accentuée
-    divider: _grey200,          // Séparateurs
+    border: _grey300,
+    borderStrong: _grey500,
+    divider: _grey200,
 
     // Overlays
-    overlayDark: Color(0x77000000),  // 47% opacité
-    overlayLight: Color(0x33000000), // 20% opacité
+    overlayDark: Color(0x77000000),
+    overlayLight: Color(0x33000000),
 
     // Balagh Amen specific
-    adminRole: Color(0xFFB71C1C),    // Rouge admin foncé
-    userRole: _blueDark,             // Bleu utilisateur
-    unreadBadge: _brandRed,          // Badge rouge
+    adminRole: _brandIndigoDark,
+    userRole: _brandIndigo,
+    unreadBadge: _redError,
 
     // GPS Accuracy
-    gpsExcellent: _green,
-    gpsGood: _greenLight,
-    gpsAverage: _orange,
-    gpsPoor: _brandRed,
+    gpsExcellent: _emeraldGreen,
+    gpsGood: _emeraldGreenLight,
+    gpsAverage: _orangeWarning,
+    gpsPoor: _redError,
   );
 
   // ============================================
-  // 📐 ESPACEMENTS (Design Tokens)
+  // 📐 ESPACEMENTS & RADIUS
   // ============================================
 
   static const double spacingXS = 4.0;
@@ -109,42 +107,10 @@ class LightColors {
   static const double spacingXL = 32.0;
   static const double spacingXXL = 48.0;
 
-  // ============================================
-  // 📏 BORDER RADIUS (Design Tokens)
-  // ============================================
-
   static const double radiusXS = 4.0;
   static const double radiusSM = 8.0;
   static const double radiusMD = 12.0;
   static const double radiusLG = 16.0;
   static const double radiusXL = 24.0;
   static const double radiusFull = 999.0;
-
-  // ============================================
-  // 🌑 SHADOWS (Élévations)
-  // ============================================
-
-  static List<BoxShadow> get shadowLight => [
-    BoxShadow(
-      color: _black.withOpacity(0.08),
-      blurRadius: 8,
-      offset: const Offset(0, 2),
-    ),
-  ];
-
-  static List<BoxShadow> get shadowMedium => [
-    BoxShadow(
-      color: _black.withOpacity(0.12),
-      blurRadius: 12,
-      offset: const Offset(0, 4),
-    ),
-  ];
-
-  static List<BoxShadow> get shadowHeavy => [
-    BoxShadow(
-      color: _black.withOpacity(0.16),
-      blurRadius: 16,
-      offset: const Offset(0, 6),
-    ),
-  ];
 }

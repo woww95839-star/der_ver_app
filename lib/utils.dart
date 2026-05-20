@@ -1,8 +1,6 @@
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'dart:math' show sin, cos, sqrt, atan2, pi;
 import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
 import 'l10n/app_localizations.dart';
 
 /// 🛠️ UTILS - Fonctions utilitaires pour l'application Balagh Amen
@@ -31,8 +29,8 @@ class Utils {
   }
 
   static bool isValidNationalCard(String card) {
-    // Validation : Exactement 8 chiffres
-    return RegExp(r'^[0-9]{8}$').hasMatch(card);
+    // Validation : Entre 8 et 18 chiffres (Adapté pour les cartes biométriques algériennes)
+    return RegExp(r'^[0-9]{8,18}$').hasMatch(card);
   }
 
   // ==================== QUESTIONS DE SÉCURITÉ ====================
@@ -165,7 +163,7 @@ class Utils {
           {'id': 'drunk_driving', 'name': 'السياقة في حالة سكر'},
           {'id': 'accident_injury', 'name': 'حادث مرور مع جرح'},
           {'id': 'accident_death', 'name': 'حادث مرور مع وفاة'},
-          {'id': 'hit_run', 'name': 'الفرار بعد حادث'},
+          {'id': 'hit_run', 'name': 'الفرار après accident'},
           {'id': 'reckless_driving', 'name': 'السياقة المتهورة'},
         ],
         'الجرائم الإلكترونية': [
@@ -265,7 +263,6 @@ class Utils {
           {'id': 'admin_doc_forgery', 'name': 'Forgery of admin documents'},
           {'id': 'use_forged_docs', 'name': 'Use of forged documents'},
           {'id': 'currency_counterfeiting', 'name': 'Currency counterfeiting'},
-          {'id': 'seal_forgery', 'name': 'Forgery of state seals'},
           {'id': 'seal_forgery', 'name': 'Forgery of state seals'},
           {'id': 'medical_cert_forgery', 'name': 'Forgery of a medical certificate'},
         ],

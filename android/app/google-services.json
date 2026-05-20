@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "502944480018",
+    "project_id": "alerts-f5d7a",
+    "storage_bucket": "alerts-f5d7a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502944480018:android:139e4d4ca8abef73f8d1cb",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-QBEepfSxeOUc3ilbdo1W5QGQmvxF9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502944480018:android:7045e1fa62c8cb16f8d1cb",
+        "android_client_info": {
+          "package_name": "com.balagamen.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ-QBEepfSxeOUc3ilbdo1W5QGQmvxF9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

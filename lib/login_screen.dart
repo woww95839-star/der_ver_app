@@ -70,7 +70,6 @@ class _LoginScreenState extends State<LoginScreen> {
         return;
       }
 
-      // ✅ VÉRIFIER SI L'UTILISATEUR EST BLOQUÉ
       if (user.isBlocked) {
         if (!mounted) return;
         context.showError(context.l10n.errorBlockedAccount);
@@ -122,7 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // ✅ LOGO DESIGNED (RECRÉÉ À PARTIR DE L'IMAGE)
                       Center(
                         child: Container(
                           width: 140,
@@ -138,20 +136,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-                          padding: const EdgeInsets.all(8), // Bordure blanche extérieure
+                          padding: const EdgeInsets.all(8),
                           child: Container(
                             decoration: const BoxDecoration(
-                              color: Color(0xFF5D1E1E), // Rouge foncé / Marron
+                              color: Color(0xFF5D1E1E),
                               shape: BoxShape.circle,
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(
-                                  Icons.shield,
-                                  size: 60,
-                                  color: Colors.white, // Effet argent/blanc
-                                ),
+                                const Icon(Icons.shield, size: 60, color: Colors.white),
                                 const SizedBox(height: 2),
                                 Text(
                                   "ALERTS",
@@ -160,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.2,
-                                    fontFamily: 'monospace', // Pour un look plus technique
+                                    fontFamily: 'monospace',
                                   ),
                                 ),
                               ],
@@ -176,13 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: context.spacingXXL),
                       TextFormField(
                         controller: _identifierController,
-                        keyboardType: TextInputType.text,
                         decoration: InputDecoration(
                           labelText: context.isArabic ? 'رقم الهاتف أو الاسم الكامل' : 'Phone or Full Name',
-                          hintText: context.isArabic ? 'مثال: 0550000000 أو محمد أحمد' : 'Ex: 0550000000 or Mohamed Ahmed',
                           prefixIcon: Icon(Icons.person, color: context.colors.textSecondary),
-                          filled: true,
-                          fillColor: context.colors.surface,
                           border: OutlineInputBorder(borderRadius: context.radiusMD),
                         ),
                         validator: (value) => (value == null || value.isEmpty) ? context.l10n.fieldRequired : null,
@@ -193,14 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
                           labelText: context.l10n.password,
-                          hintText: '••••••',
                           prefixIcon: Icon(Icons.lock, color: context.colors.textSecondary),
                           suffixIcon: IconButton(
                             icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: context.colors.textSecondary),
                             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                           ),
-                          filled: true,
-                          fillColor: context.colors.surface,
                           border: OutlineInputBorder(borderRadius: context.radiusMD),
                         ),
                         validator: (value) => (value == null || value.isEmpty) ? context.l10n.fieldRequired : (value.length < 6 ? context.l10n.errorInvalidPassword : null),
@@ -210,7 +197,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 56,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _handleLogin,
-                          style: ElevatedButton.styleFrom(backgroundColor: context.colors.brand, foregroundColor: Colors.white, shape: RoundedRectangleBorder(borderRadius: context.radiusMD)),
                           child: _isLoading ? const CircularProgressIndicator(color: Colors.white) : Text(context.l10n.login, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ),
@@ -220,53 +206,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(context.l10n.forgotPassword, style: TextStyle(color: context.colors.brand, fontWeight: FontWeight.w600)),
                       ),
                       SizedBox(height: context.spacingXL),
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: context.colors.divider)),
-                          Padding(padding: EdgeInsets.symmetric(horizontal: context.spacingMD), child: Text(context.l10n.or, style: context.bodySmall?.colored(context.colors.textSecondary))),
-                          Expanded(child: Divider(color: context.colors.divider)),
-                        ],
-                      ),
-                      SizedBox(height: context.spacingXL),
                       OutlinedButton(
                         onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterScreen())),
-                        style: OutlinedButton.styleFrom(foregroundColor: context.colors.brand, side: BorderSide(color: context.colors.brand, width: 2), shape: RoundedRectangleBorder(borderRadius: context.radiusMD), padding: const EdgeInsets.symmetric(vertical: 16)),
                         child: Text(context.l10n.register, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                      SizedBox(height: context.spacingXL),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(color: context.colors.info.withOpacity(0.1), borderRadius: context.radiusSM, border: Border.all(color: context.colors.info.withOpacity(0.3))),
-                        child: Column(
-                          children: [
-                            Icon(Icons.info_outline, color: context.colors.info, size: 20),
-                            const SizedBox(height: 8),
-                            Text(context.isArabic ? 'للمسؤولين: استخدم admin / admin123' : 'For admins: use admin / admin123', style: TextStyle(fontSize: 12, color: context.colors.info), textAlign: TextAlign.center),
-                          ],
-                        ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            // ✅ BOUTON SWITCH LANGUE
-            Positioned(
-              top: 10,
-              right: context.isArabic ? null : 10,
-              left: context.isArabic ? 10 : null,
-              child: ActionChip(
-                avatar: Text(context.isArabic ? '🇬🇧' : '🇩🇿', style: const TextStyle(fontSize: 16)),
-                label: Text(context.isArabic ? 'English' : 'العربية', style: TextStyle(color: context.colors.brand, fontWeight: FontWeight.bold)),
-                onPressed: () {
-                  if (context.isArabic) {
-                    languageProvider.setEnglish();
-                  } else {
-                    languageProvider.setArabic();
-                  }
-                },
-                backgroundColor: context.colors.surface,
-                side: BorderSide(color: context.colors.brand.withOpacity(0.5)),
               ),
             ),
           ],
